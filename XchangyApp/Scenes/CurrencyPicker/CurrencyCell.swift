@@ -15,18 +15,56 @@ final class CurrencyCell: UITableViewCell {
     
     // MARK: - Private UI
     
-    private let iconContainer = UIView()
-    private let flagImageView = UIImageView()
-    private let codeLabel = UILabel()
+    private lazy var iconContainer: UIView = {
+        let iconContainer = UIView()
+        iconContainer.backgroundColor = .secondarySystemBackground
+        iconContainer.layer.cornerRadius = Constants.iconContainerCornerRadius
+        iconContainer.translatesAutoresizingMaskIntoConstraints = false
+        return iconContainer
+    }()
     
-    private let indicatorView = UIView()
-    private let checkmarkImageView = UIImageView()
+    private lazy var flagImageView: UIImageView = {
+        let flagImageView = UIImageView()
+        flagImageView.contentMode = .scaleAspectFill
+        flagImageView.clipsToBounds = true
+        flagImageView.layer.cornerRadius = Constants.flagCornerRadius
+        flagImageView.translatesAutoresizingMaskIntoConstraints = false
+        return flagImageView
+    }()
+    
+    private lazy var codeLabel: UILabel = {
+        let codeLabel = UILabel()
+        codeLabel.font = .systemFont(ofSize: Constants.codeFontSize, weight: .semibold)
+        codeLabel.textColor = .label
+        codeLabel.translatesAutoresizingMaskIntoConstraints = false
+        return codeLabel
+    }()
+    
+    private lazy var indicatorView: UIView = {
+        let indicatorView = UIView()
+        indicatorView.layer.cornerRadius = Constants.indicatorCornerRadius
+        indicatorView.layer.borderWidth = Constants.indicatorBorderWidth
+        indicatorView.layer.borderColor = UIColor.systemGray4.cgColor
+        indicatorView.backgroundColor = .clear
+        indicatorView.translatesAutoresizingMaskIntoConstraints = false
+        return indicatorView
+    }()
+    
+    private lazy var checkmarkImageView: UIImageView = {
+        let checkmarkImageView = UIImageView()
+        let checkmarkConfig = UIImage.SymbolConfiguration(pointSize: Constants.checkmarkPointSize, weight: .bold)
+        checkmarkImageView.image = UIImage(systemName: "checkmark", withConfiguration: checkmarkConfig)
+        checkmarkImageView.tintColor = .white
+        checkmarkImageView.isHidden = true
+        checkmarkImageView.translatesAutoresizingMaskIntoConstraints = false
+        return checkmarkImageView
+    }()
     
     // MARK: - Init
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupView()
+        setupCell()
         setupHierarchy()
         setupConstraints()
     }
@@ -45,44 +83,16 @@ final class CurrencyCell: UITableViewCell {
     
     // MARK: - Private Methods
     
-    private func setupView() {
+    private func setupCell() {
         selectionStyle = .none
         backgroundColor = .white
         contentView.backgroundColor = .white
-        
-        iconContainer.backgroundColor = .secondarySystemBackground
-        iconContainer.layer.cornerRadius = Constants.iconContainerCornerRadius
-        
-        flagImageView.contentMode = .scaleAspectFill
-        flagImageView.clipsToBounds = true
-        flagImageView.layer.cornerRadius = Constants.flagCornerRadius
-        
-        codeLabel.font = .systemFont(ofSize: Constants.codeFontSize, weight: .semibold)
-        codeLabel.textColor = .label
-        
-        indicatorView.layer.cornerRadius = Constants.indicatorCornerRadius
-        indicatorView.layer.borderWidth = Constants.indicatorBorderWidth
-        indicatorView.layer.borderColor = UIColor.systemGray4.cgColor
-        indicatorView.backgroundColor = .clear
-        
-        let checkmarkConfig = UIImage.SymbolConfiguration(pointSize: Constants.checkmarkPointSize, weight: .bold)
-        checkmarkImageView.image = UIImage(systemName: "checkmark", withConfiguration: checkmarkConfig)
-        checkmarkImageView.tintColor = .white
-        checkmarkImageView.isHidden = true
     }
     
     private func setupHierarchy() {
-        contentView.addSubview(iconContainer)
+        contentView.addSubviews(iconContainer, codeLabel, indicatorView)
         iconContainer.addSubview(flagImageView)
-        
-        contentView.addSubview(codeLabel)
-        
-        contentView.addSubview(indicatorView)
         indicatorView.addSubview(checkmarkImageView)
-        
-        [iconContainer, flagImageView, codeLabel, indicatorView, checkmarkImageView].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
     }
     
     private func setupConstraints() {
@@ -136,4 +146,10 @@ private enum Constants {
     static let indicatorBorderWidth: CGFloat = 2
     
     static let checkmarkPointSize: CGFloat = 14
+}
+
+extension UIView {
+    func addSubviews(_ views: UIView...) {
+        views.forEach { addSubview($0) }
+    }
 }

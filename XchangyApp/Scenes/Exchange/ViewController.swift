@@ -82,16 +82,12 @@ final class ViewController: UIViewController {
     }
     
     private func configureSheetPresentation(for controller: UIViewController) {
-        if #available(iOS 15.0, *) {
-            controller.modalPresentationStyle = .pageSheet
-            if let sheet = controller.sheetPresentationController {
-                sheet.detents = [.medium()]
-                sheet.prefersGrabberVisible = true
-                sheet.preferredCornerRadius = 32
-            }
-        } else {
-            controller.modalPresentationStyle = .fullScreen
-        }
+        
+        controller.modalPresentationStyle = .pageSheet
+        guard let sheet = controller.sheetPresentationController else { return }
+        sheet.detents = [.medium()]
+        sheet.prefersGrabberVisible = true
+        sheet.preferredCornerRadius = 32
     }
     
     @objc private func dismissKeyboard() {
