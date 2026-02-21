@@ -19,15 +19,51 @@ final class CurrencyPickerViewController: UIViewController {
     private var selected: Currency
     
     private var cardHeight: CGFloat {
-        min(CGFloat(currencies.count) * Constants.rowHeight + Constants.cardHeightExtra, Constants.maxCardHeight)
+        min(
+            CGFloat(currencies.count) * Constants.rowHeight + Constants.cardHeightExtra,
+            Constants.maxCardHeight
+        )
     }
     
     // MARK: - Private UI
     
-    private let titleLabel = UILabel()
-    private let closeButton = UIButton(type: .system)
-    private let cardView = UIView()
-    private let tableView = UITableView(frame: .zero, style: .plain)
+    private lazy var titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.text = "Choose currency"
+        titleLabel.font = .boldSystemFont(ofSize: Constants.titleFontSize)
+        titleLabel.textColor = .label
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        return titleLabel
+    }()
+    
+    private lazy var closeButton: UIButton = {
+        let closeButton = UIButton(type: .system)
+        let closeConfig = UIImage.SymbolConfiguration(pointSize: Constants.closeIconPointSize, weight: .medium)
+        closeButton.setImage(UIImage(systemName: "xmark", withConfiguration: closeConfig), for: .normal)
+        closeButton.tintColor = .label
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        return closeButton
+    }()
+    
+    private lazy var cardView: UIView = {
+        let cardView = UIView()
+        cardView.backgroundColor = .secondarySystemBackground
+        cardView.layer.cornerRadius = Constants.cardCornerRadius
+        cardView.clipsToBounds = true
+        cardView.translatesAutoresizingMaskIntoConstraints = false
+        return cardView
+    }()
+    
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .plain)
+        tableView.backgroundColor = .white
+        tableView.separatorStyle = .none
+        tableView.showsVerticalScrollIndicator = false
+        tableView.rowHeight = Constants.rowHeight
+        tableView.isScrollEnabled = true
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
     
     // MARK: - Init
     
@@ -56,32 +92,10 @@ final class CurrencyPickerViewController: UIViewController {
     
     private func setupView() {
         view.backgroundColor = .systemBackground
-        
-        titleLabel.text = "Choose currency"
-        titleLabel.font = .boldSystemFont(ofSize: Constants.titleFontSize)
-        titleLabel.textColor = .label
-        
-        let closeConfig = UIImage.SymbolConfiguration(pointSize: Constants.closeIconPointSize, weight: .medium)
-        closeButton.setImage(UIImage(systemName: "xmark", withConfiguration: closeConfig), for: .normal)
-        closeButton.tintColor = .label
-        
-        cardView.backgroundColor = .secondarySystemBackground
-        cardView.layer.cornerRadius = Constants.cardCornerRadius
-        cardView.clipsToBounds = true
-        
-        tableView.backgroundColor = .white
-        tableView.separatorStyle = .none
-        tableView.showsVerticalScrollIndicator = false
-        tableView.rowHeight = Constants.rowHeight
     }
     
     private func setupHierarchy() {
-        [titleLabel, closeButton, cardView].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
-        }
-        
-        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubviews(titleLabel, closeButton, cardView)
         cardView.addSubview(tableView)
     }
     
@@ -99,14 +113,16 @@ final class CurrencyPickerViewController: UIViewController {
             cardView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constants.headerBottom),
             cardView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.cardSideInset),
             cardView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.cardSideInset),
-            cardView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.cardBottomInset),
+            cardView.heightAnchor.constraint(equalToConstant: cardHeight),
+            cardView.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.cardBottomInset),
+                    
             
             tableView.topAnchor.constraint(equalTo: cardView.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor)
         ])
-
+        
     }
     
     private func setupActions() {
