@@ -9,25 +9,47 @@ import UIKit
 
 final class ExchangeView: UIView {
     
-    // MARK: - Public Properties
-    
-    let fromView = CurrencyInputView()
-    let toView = CurrencyInputView()
-    
     // MARK: - Private UI
     
-    private let titleLabel = UILabel()
-    private let exchangeRateLabel = UILabel()
-    
-    private let swapButtonBackground: UIView = {
-        let view = UIView()
-        view.backgroundColor = .secondarySystemBackground
-        view.layer.cornerRadius = Constants.swapBackgroundCornerRadius
-        return view
+    private(set) lazy var fromView: CurrencyInputView = {
+        let fromView = CurrencyInputView()
+        fromView.translatesAutoresizingMaskIntoConstraints = false
+        return fromView
     }()
     
-    private let swapButton: UIButton = {
-        let button = UIButton(type: .system)
+    private(set) lazy var toView: CurrencyInputView = {
+        let toView = CurrencyInputView()
+        toView.translatesAutoresizingMaskIntoConstraints = false
+        return toView
+    }()
+    
+    private lazy var titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.text = "Exchange calculator"
+        titleLabel.font = .boldSystemFont(ofSize: Constants.titleFontSize)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        return titleLabel
+    }()
+    
+    private lazy var exchangeRateLabel: UILabel = {
+        let exchangeRateLabel = UILabel()
+        exchangeRateLabel.text = "1 USDc = 18.4097 MXN"
+        exchangeRateLabel.font = .systemFont(ofSize: Constants.rateFontSize)
+        exchangeRateLabel.textColor = .accentGreen
+        exchangeRateLabel.translatesAutoresizingMaskIntoConstraints = false
+        return exchangeRateLabel
+    }()
+    
+    private lazy var swapButtonBackground: UIView = {
+        let swapButtonBackground = UIView()
+        swapButtonBackground.backgroundColor = .secondarySystemBackground
+        swapButtonBackground.layer.cornerRadius = Constants.swapBackgroundCornerRadius
+        swapButtonBackground.translatesAutoresizingMaskIntoConstraints = false
+        return swapButtonBackground
+    }()
+    
+    private lazy var swapButton: UIButton = {
+        let swapButton = UIButton(type: .system)
         
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .accentGreen
@@ -36,8 +58,9 @@ final class ExchangeView: UIView {
         config.image = UIImage(systemName: "arrow.down")
         config.preferredSymbolConfigurationForImage = Constants.swapButtonSymbolConfig
         
-        button.configuration = config
-        return button
+        swapButton.configuration = config
+        swapButton.translatesAutoresizingMaskIntoConstraints = false
+        return swapButton
     }()
     
     // MARK: - Init
@@ -77,24 +100,11 @@ final class ExchangeView: UIView {
     
     private func setupView() {
         backgroundColor = .secondarySystemBackground
-        translatesAutoresizingMaskIntoConstraints = false
-        
-        titleLabel.text = "Exchange calculator"
-        titleLabel.font = .boldSystemFont(ofSize: Constants.titleFontSize)
-        
-        exchangeRateLabel.text = "1 USDc = 18.4097 MXN"
-        exchangeRateLabel.font = .systemFont(ofSize: Constants.rateFontSize)
-        exchangeRateLabel.textColor = .accentGreen
     }
     
     private func setupHierarchy() {
-        [titleLabel, exchangeRateLabel, fromView, toView, swapButtonBackground, swapButton].forEach {
-            addSubview($0)
-        }
-        
-        [titleLabel, exchangeRateLabel, fromView, toView, swapButtonBackground, swapButton].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
+        addSubviews(titleLabel, exchangeRateLabel, fromView, toView, swapButtonBackground)
+        swapButtonBackground.addSubview(swapButton)
     }
     
     private func setupConstraints() {
@@ -116,16 +126,17 @@ final class ExchangeView: UIView {
             toView.leadingAnchor.constraint(equalTo: fromView.leadingAnchor),
             toView.trailingAnchor.constraint(equalTo: fromView.trailingAnchor),
             toView.heightAnchor.constraint(equalTo: fromView.heightAnchor),
+            toView.bottomAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.bottomAnchor, constant: -Constants.bottomPadding),
             
-            swapButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            swapButton.centerYAnchor.constraint(equalTo: fromView.bottomAnchor, constant: Constants.swapButtonOffset),
-            swapButton.widthAnchor.constraint(equalToConstant: Constants.swapButtonSize),
-            swapButton.heightAnchor.constraint(equalTo: swapButton.widthAnchor),
-            
-            swapButtonBackground.centerXAnchor.constraint(equalTo: swapButton.centerXAnchor),
-            swapButtonBackground.centerYAnchor.constraint(equalTo: swapButton.centerYAnchor),
+            swapButtonBackground.centerXAnchor.constraint(equalTo: centerXAnchor),
+            swapButtonBackground.centerYAnchor.constraint(equalTo: fromView.bottomAnchor, constant: Constants.swapButtonOffset),
             swapButtonBackground.widthAnchor.constraint(equalToConstant: Constants.swapBackgroundWidth),
-            swapButtonBackground.heightAnchor.constraint(equalToConstant: Constants.swapBackgroundHeight)
+            swapButtonBackground.heightAnchor.constraint(equalToConstant: Constants.swapBackgroundHeight),
+
+            swapButton.centerXAnchor.constraint(equalTo: swapButtonBackground.centerXAnchor),
+            swapButton.centerYAnchor.constraint(equalTo: swapButtonBackground.centerYAnchor),
+            swapButton.widthAnchor.constraint(equalToConstant: Constants.swapButtonSize),
+            swapButton.heightAnchor.constraint(equalTo: swapButton.widthAnchor)
         ])
     }
 }
@@ -135,17 +146,6 @@ final class ExchangeView: UIView {
 private enum Assets {
     static let usFlag = "us_flag"
     static let mxFlag = "mx_flag"
-}
-
-// MARK: - Colors
-
-extension UIColor {
-    static let accentGreen = UIColor(
-        red: 34.0 / 255.0,
-        green: 208.0 / 255.0,
-        blue: 129.0 / 255.0,
-        alpha: 1.0
-    )
 }
 
 // MARK: - Constants
@@ -170,4 +170,6 @@ private enum Constants {
     static let swapBackgroundWidth: CGFloat = 40
     static let swapBackgroundHeight: CGFloat = 38
     static let swapBackgroundCornerRadius: CGFloat = 26
+    
+    static let bottomPadding: CGFloat = 16
 }
