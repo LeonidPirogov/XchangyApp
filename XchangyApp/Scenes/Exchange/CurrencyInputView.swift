@@ -21,18 +21,58 @@ final class CurrencyInputView: UIView {
     
     // MARK: - Private UI
     
-    private let cardView = UIView()
-    private let flagImageView = UIImageView()
-    private let currencyLabel = UILabel()
-    private let amountTextField = UITextField()
-    private let chevronImageView = UIImageView()
-    private let currencyTapButton = UIButton(type: .system)
+    private lazy var cardView: UIView = {
+        let cardView = UIView()
+        cardView.backgroundColor = .systemBackground
+        cardView.layer.cornerRadius = Constants.cardCornerRadius
+        cardView.translatesAutoresizingMaskIntoConstraints = false
+        return cardView
+    }()
+    
+    private lazy var flagImageView: UIImageView = {
+        let flagImageView = UIImageView()
+        flagImageView.contentMode = .scaleAspectFill
+        flagImageView.clipsToBounds = true
+        flagImageView.layer.cornerRadius = Constants.flagCornerRadius
+        flagImageView.translatesAutoresizingMaskIntoConstraints = false
+        return flagImageView
+    }()
+    
+    private lazy var currencyLabel: UILabel = {
+        let currencyLabel = UILabel()
+        currencyLabel.font = .systemFont(ofSize: Constants.currencyFontSize, weight: .semibold)
+        currencyLabel.translatesAutoresizingMaskIntoConstraints = false
+        return currencyLabel
+    }()
+    
+    private lazy var chevronImageView: UIImageView = {
+        let chevronImageView = UIImageView()
+        let config = UIImage.SymbolConfiguration(pointSize: Constants.chevronPointSize, weight: .bold)
+        chevronImageView.image = UIImage(systemName: "chevron.down", withConfiguration: config)
+        chevronImageView.tintColor = .label
+        chevronImageView.translatesAutoresizingMaskIntoConstraints = false
+        return chevronImageView
+    }()
+    
+    private lazy var amountTextField: UITextField = {
+        let amountTextField = UITextField()
+        amountTextField.font = .systemFont(ofSize: Constants.amountFontSize, weight: .semibold)
+        amountTextField.textAlignment = .right
+        amountTextField.keyboardType = .decimalPad
+        amountTextField.translatesAutoresizingMaskIntoConstraints = false
+        return amountTextField
+    }()
+    
+    private lazy var currencyTapButton: UIButton = {
+        let currencyTapButton = UIButton(type: .system)
+        currencyTapButton.translatesAutoresizingMaskIntoConstraints = false
+        return currencyTapButton
+    }()
     
     // MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupView()
         setupHierarchy()
         setupConstraints()
         setupActions()
@@ -60,29 +100,9 @@ final class CurrencyInputView: UIView {
     
     // MARK: - Private Methods
     
-    private func setupView() {
-        cardView.backgroundColor = .systemBackground
-        cardView.layer.cornerRadius = Constants.cardCornerRadius
-        
-        flagImageView.contentMode = .scaleAspectFill
-        flagImageView.clipsToBounds = true
-        flagImageView.layer.cornerRadius = Constants.flagCornerRadius
-        
-        currencyLabel.font = .systemFont(ofSize: Constants.currencyFontSize, weight: .semibold)
-        let config = UIImage.SymbolConfiguration(pointSize: Constants.chevronPointSize, weight: .bold)
-        chevronImageView.image = UIImage(systemName: "chevron.down", withConfiguration: config)
-        chevronImageView.tintColor = .label
-    }
-    
     private func setupHierarchy() {
         addSubview(cardView)
-        [flagImageView, currencyLabel, amountTextField, chevronImageView, currencyTapButton].forEach {
-            cardView.addSubview($0)
-        }
-        
-        [cardView, flagImageView, currencyLabel, amountTextField, chevronImageView, currencyTapButton].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
+        cardView.addSubviews(flagImageView, currencyLabel, amountTextField, chevronImageView, currencyTapButton)
     }
     
     private func setupActions() {
