@@ -148,8 +148,4 @@ private enum Constants {
     static let checkmarkPointSize: CGFloat = 14
 }
 
-extension UIView {
-    func addSubviews(_ views: UIView...) {
-        views.forEach { addSubview($0) }
-    }
-}
+
