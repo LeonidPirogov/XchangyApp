@@ -75,9 +75,10 @@ final class CurrencyCell: UITableViewCell {
     
     // MARK: - Public Methods
     
-    func configure(currency: Currency, isSelected: Bool) {
+    func configure(currency: Currency, flag: UIImage?, flagContentRect: CGRect?, isSelected: Bool) {
         codeLabel.text = currency.code
-        flagImageView.image = currency.flag
+        flagImageView.image = flag
+        flagImageView.layer.contentsRect = flagContentRect ?? Constants.defaultFlagContentsRect
         applySelection(isSelected)
     }
     
@@ -85,8 +86,8 @@ final class CurrencyCell: UITableViewCell {
     
     private func setupCell() {
         selectionStyle = .none
-        backgroundColor = .white
-        contentView.backgroundColor = .white
+        backgroundColor = .systemBackground
+        contentView.backgroundColor = .systemBackground
     }
     
     private func setupHierarchy() {
@@ -146,6 +147,7 @@ private enum Constants {
     static let indicatorBorderWidth: CGFloat = 2
     
     static let checkmarkPointSize: CGFloat = 14
+    static let defaultFlagContentsRect = CGRect(x: 0, y: 0, width: 1, height: 1)
 }
 
 
