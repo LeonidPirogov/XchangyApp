@@ -1,14 +1,14 @@
 //
-//  Currency.swift
+//  CurrencyUI.swift
 //  XchangyApp
 //
-//  Created by Leonid on 11.02.2026.
+//  Created by Leonid on 22.02.2026.
 //
 
 import UIKit
 
-struct Currency: Equatable {
-    let code: String
+struct CurrencyUI: Equatable {
+    let currency: Currency
     let flagImageName: String
     let flagContentRect: CGRect?
     
