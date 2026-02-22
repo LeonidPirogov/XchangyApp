@@ -16,6 +16,7 @@ final class CurrencyPickerViewController: UIViewController {
     // MARK: - Private Properties
     
     private let currencies: [Currency]
+    private let currencyUIByCode: [String: CurrencyUIConfig]
     private var selected: Currency
     
     private var cardHeight: CGFloat {
@@ -56,7 +57,7 @@ final class CurrencyPickerViewController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = .systemBackground
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
         tableView.rowHeight = Constants.rowHeight
@@ -67,9 +68,10 @@ final class CurrencyPickerViewController: UIViewController {
     
     // MARK: - Init
     
-    init(currencies: [Currency], selected: Currency) {
+    init(currencies: [Currency], selected: Currency, currencyUIByCode: [String: CurrencyUIConfig]) {
         self.currencies = currencies
         self.selected = selected
+        self.currencyUIByCode = currencyUIByCode
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -162,7 +164,17 @@ extension CurrencyPickerViewController: UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let currency = currencies[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: CurrencyCell.reuseId, for: indexPath) as! CurrencyCell
-        cell.configure(currency: currency, isSelected: currency == selected)
+        
+        let config = currencyUIByCode[currency.code]
+        let flag = config.flatMap { UIImage(named: $0.flagImageName) }
+        
+        cell.configure(
+            currency: currency,
+            flag: flag,
+            flagContentRect: config?.contentRect,
+            isSelected: currency == selected
+        )
+        
         return cell
     }
     
@@ -195,4 +207,9 @@ private enum Constants {
     
     static let cardHeightExtra: CGFloat = 16
     static let maxCardHeight: CGFloat = 420
+}
+
+struct CurrencyUIConfig {
+    let flagImageName: String
+    let contentRect: CGRect?
 }
