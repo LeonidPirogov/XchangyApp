@@ -63,6 +63,10 @@ final class ExchangeView: UIView {
         return swapButton
     }()
     
+    // MARK: - Public Callbacks
+
+    var onSwapTap: (() -> Void)?
+    
     // MARK: - Init
     
     override init(frame: CGRect) {
@@ -70,6 +74,7 @@ final class ExchangeView: UIView {
         setupView()
         setupHierarchy()
         setupConstraints()
+        setupActions()
     }
     
     required init?(coder: NSCoder) {
@@ -96,6 +101,10 @@ final class ExchangeView: UIView {
         )
     }
     
+    func setRateText(_ text: String) {
+        exchangeRateLabel.text = text
+    }
+    
     // MARK: - Private Methods
     
     private func setupView() {
@@ -105,6 +114,14 @@ final class ExchangeView: UIView {
     private func setupHierarchy() {
         addSubviews(titleLabel, exchangeRateLabel, fromView, toView, swapButtonBackground)
         swapButtonBackground.addSubview(swapButton)
+    }
+    
+    private func setupActions() {
+        swapButton.addTarget(self, action: #selector(swapTapped), for: .touchUpInside)
+    }
+    
+    @objc private func swapTapped() {
+        onSwapTap?()
     }
     
     private func setupConstraints() {
