@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+struct CurrencyUIConfig {
+    let flagImageName: String
+    let contentRect: CGRect?
+}
