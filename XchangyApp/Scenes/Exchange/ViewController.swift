@@ -124,19 +124,22 @@ final class ViewController: UIViewController {
     
     private func presentCurrencyPicker() {
         dismissKeyboard()
-        
-        let picker = CurrencyPickerViewController(
+
+        let pickerViewModel = CurrencyPickerViewModel(
+            title: "Choose currency",
             currencies: availableCurrencies,
-            selected: viewModel.state.toCurrency,
-            currencyUIByCode: currencyUIByCode
+            currencyUIByCode: currencyUIByCode,
+            selected: viewModel.state.toCurrency
         )
-        
-        picker.onSelect = { [weak self] currency in
+
+        let pickerVC = CurrencyPickerViewController(viewModel: pickerViewModel)
+
+        pickerVC.onSelect = { [weak self] currency in
             self?.viewModel.userSelectedToCurrency(currency)
         }
-        
-        configureSheetPresentation(for: picker)
-        present(picker, animated: true)
+
+        configureSheetPresentation(for: pickerVC)
+        present(pickerVC, animated: true)
     }
     
     @objc private func fromAmountChanged() {
