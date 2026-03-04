@@ -15,13 +15,11 @@ final class CurrencyPickerViewController: UIViewController {
     
     // MARK: - Private Properties
     
-    private let currencies: [Currency]
-    private let currencyUIByCode: [String: CurrencyUIConfig]
-    private var selected: Currency
+    private var viewModel: CurrencyPickerViewModel
     
     private var cardHeight: CGFloat {
         min(
-            CGFloat(currencies.count) * Constants.rowHeight + Constants.cardHeightExtra,
+            CGFloat(viewModel.currencies.count) * Constants.rowHeight + Constants.cardHeightExtra,
             Constants.maxCardHeight
         )
     }
@@ -30,7 +28,7 @@ final class CurrencyPickerViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let titleLabel = UILabel()
-        titleLabel.text = "Choose currency"
+        titleLabel.text = viewModel.title
         titleLabel.font = .boldSystemFont(ofSize: Constants.titleFontSize)
         titleLabel.textColor = .label
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -68,10 +66,8 @@ final class CurrencyPickerViewController: UIViewController {
     
     // MARK: - Init
     
-    init(currencies: [Currency], selected: Currency, currencyUIByCode: [String: CurrencyUIConfig]) {
-        self.currencies = currencies
-        self.selected = selected
-        self.currencyUIByCode = currencyUIByCode
+    init(viewModel: CurrencyPickerViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -124,7 +120,6 @@ final class CurrencyPickerViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor)
         ])
-        
     }
     
     private func setupActions() {
@@ -138,7 +133,7 @@ final class CurrencyPickerViewController: UIViewController {
     }
     
     private func applySelection(_ currency: Currency) {
-        selected = currency
+        viewModel.selected = currency
         tableView.reloadData()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + Constants.selectionDelay) { [weak self] in
@@ -158,28 +153,23 @@ final class CurrencyPickerViewController: UIViewController {
 extension CurrencyPickerViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        currencies.count
+        viewModel.currencies.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let currency = currencies[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: CurrencyCell.reuseId, for: indexPath) as! CurrencyCell
-        
-        let config = currencyUIByCode[currency.code]
-        let flag = config.flatMap { UIImage(named: $0.flagImageName) }
-        
-        cell.configure(
-            currency: currency,
-            flag: flag,
-            flagContentRect: config?.contentRect,
-            isSelected: currency == selected
-        )
-        
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: CurrencyCell.reuseId,
+            for: indexPath
+        ) as! CurrencyCell
+
+        let model = viewModel.makeCellModel(at: indexPath.row)
+        cell.configure(with: model)
+
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        applySelection(currencies[indexPath.row])
+        applySelection(viewModel.currencies[indexPath.row])
     }
 }
 
@@ -209,7 +199,4 @@ private enum Constants {
     static let maxCardHeight: CGFloat = 420
 }
 
-struct CurrencyUIConfig {
-    let flagImageName: String
-    let contentRect: CGRect?
-}
+
