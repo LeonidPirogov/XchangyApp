@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B3FE0B382F38B2EB00291A2C /* Exceptions for "XchangyApp" folder in "XchangyApp" target */ = {
+		B37D2A242F4B32B700FF1F2D /* Exceptions for "XchangyApp" folder in "XchangyApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				App/Info.plist,
@@ -21,10 +21,10 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B3FE0B282F38B2E900291A2C /* XchangyApp */ = {
+		B37D2A162F4B32B700FF1F2D /* XchangyApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				B3FE0B382F38B2EB00291A2C /* Exceptions for "XchangyApp" folder in "XchangyApp" target */,
+				B37D2A242F4B32B700FF1F2D /* Exceptions for "XchangyApp" folder in "XchangyApp" target */,
 			);
 			path = XchangyApp;
 			sourceTree = "<group>";
@@ -45,7 +45,7 @@
 		B3FE0B1D2F38B2E900291A2C = {
 			isa = PBXGroup;
 			children = (
-				B3FE0B282F38B2E900291A2C /* XchangyApp */,
+				B37D2A162F4B32B700FF1F2D /* XchangyApp */,
 				B3FE0B272F38B2E900291A2C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -74,7 +74,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				B3FE0B282F38B2E900291A2C /* XchangyApp */,
+				B37D2A162F4B32B700FF1F2D /* XchangyApp */,
 			);
 			name = XchangyApp;
 			packageProductDependencies = (

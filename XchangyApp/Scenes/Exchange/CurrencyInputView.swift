@@ -87,7 +87,7 @@ final class CurrencyInputView: UIView {
     
     func configure(flag: UIImage?, code: String, amount: String, flagContentsRect: CGRect? = nil) {
         applyCurrency(flag: flag, code: code, flagContentsRect: flagContentsRect)
-        amountTextField.text = amount
+        setAmountText(amount)
     }
     
     func updateCurrency(flag: UIImage?, code: String, flagContentsRect: CGRect? = nil) {
@@ -96,6 +96,15 @@ final class CurrencyInputView: UIView {
     
     func setAmountDelegate(_ delegate: UITextFieldDelegate) {
         amountTextField.delegate = delegate
+    }
+    
+    func setAmountText(_ text: String) {
+        guard !amountTextField.isFirstResponder else { return }
+        amountTextField.text = text
+    }
+
+    func addAmountEditingChangedTarget(_ target: Any?, action: Selector) {
+        amountTextField.addTarget(target, action: action, for: .editingChanged)
     }
     
     // MARK: - Private Methods
