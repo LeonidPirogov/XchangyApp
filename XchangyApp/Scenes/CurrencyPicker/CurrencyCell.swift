@@ -75,11 +75,11 @@ final class CurrencyCell: UITableViewCell {
     
     // MARK: - Public Methods
     
-    func configure(currency: Currency, flag: UIImage?, flagContentRect: CGRect?, isSelected: Bool) {
-        codeLabel.text = currency.code
-        flagImageView.image = flag
-        flagImageView.layer.contentsRect = flagContentRect ?? Constants.defaultFlagContentsRect
-        applySelection(isSelected)
+    func configure(with model: CurrencyCellModel) {
+        codeLabel.text = model.code
+        flagImageView.image = model.flag
+        flagImageView.layer.contentsRect = model.flagContentsRect
+        applySelection(model.isSelected)
     }
     
     // MARK: - Private Methods
@@ -149,5 +149,3 @@ private enum Constants {
     static let checkmarkPointSize: CGFloat = 14
     static let defaultFlagContentsRect = CGRect(x: 0, y: 0, width: 1, height: 1)
 }
-
-
